@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>thymeleaf</title>
+    <link rel="stylesheet" th:href="@{/assets/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{http://at.alicdn.com/t/c/font_4124068_f4lngyntvph.css}">
+    <style>
+        body {
+            font-family: "Open Sans", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", "Hiragino Sans GB", "WenQuanYi Micro Hei", Arial, "sans-serif";
+            background: url("/assets/image/bg.jpg") no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        /*.form-container {*/
+        /*    display: flex;*/
+        /*    justify-content: center;*/
+        /*    margin-top: 30px;*/
+
+        /*}*/
+
+        form {
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(255,255,255,.7);
+            width: 300px;
+            margin: 35px auto;
+        }
+
+
+        form button{
+            background: #56b5d1;
+            color: #ffffff;
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            letter-spacing: 3px;
+        }
+
+        form legend {
+            text-align: center;
+        }
+
+        fieldset {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .form-item {
+            border: 1px solid #08366e;
+            margin-bottom: 20px;
+            padding: 5px 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .form-item input {
+            border: none;
+            background: transparent;
+        }
+
+        .form-item input:focus {
+            outline: none;
+        }
+
+        .login-btn {
+            border: none;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+<!--    <div class="form-container">-->
+        <form id="loginForm">
+            <fieldset>
+                <legend>登录</legend>
+
+                <div class="form-item">
+                    <i class="iconfont icon-user"></i>
+                    <input type="tel"  name="telphone" minlength="11" autocomplete="off" maxlength="11" required/>
+                </div>
+                <div class="form-item">
+                    <i class="iconfont icon-lock"></i>
+                    <input type="password" name="password"  autocomplete="off" minlength="3" maxlength="6" required/>
+                </div>
+
+                <div class="form-item login-btn">
+                    <button type="reset">重置</button>
+                    <button type="submit">登录</button>
+                </div>
+
+
+            </fieldset>
+
+
+        </form>
+<!--    </div>-->
+
+
+</div>
+
+<script th:src="@{/assets/js/jquery-3.7.1.js}"></script>
+<script th:src="@{/assets/js/bootstrap.js}"></script>
+<script th:src="@{/assets/js/md5.js}"></script>
+<script>
+    const form = document.querySelector('#loginForm');
+    const SALT = "1a2b3c4d";
+
+    form.addEventListener("submit",function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        const tel = $('input[name="telphone"]').val();
+        let pass = $('input[name="password"]').val();
+        const password = md5(SALT.charAt(0)+SALT.charAt(2)+pass+SALT.charAt(5)+SALT.charAt(4));
+        $.ajax({
+            url:"/login",
+            method:"POST",
+            data:{
+                tel,
+                password
+            },
+            success(data){
+                form.reset();
+                if(data.code !== 200){
+                    alert(data.message);
+                }else{
+                    console.log("success");
+                }
+            },
+            error(e){
+                console.log(e);
+                alert(e.message);
+            }
+        })
+    })
+
+</script>
+</body>
+</html>
